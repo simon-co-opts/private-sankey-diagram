@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import SankeyDiagram from './SankeyDiagram';
 import sessionsList from './data/sessionsList.json';
 
+console.log('sessionsList:', sessionsList);
+
 function App() {
   const [data, setData] = useState(null);
 
@@ -9,7 +11,7 @@ function App() {
     const loadSessionData = async () => {
       console.log('sessionsList:', sessionsList); // Verify the structure
 
-      const sessionFiles = sessionsList.files; // This should be an array of filenames
+      const sessionFiles = sessionsList; // This should be an array of filenames
       if (!Array.isArray(sessionFiles) || sessionFiles.length === 0) {
         console.error('No files found in sessionsList');
         return;
@@ -38,7 +40,9 @@ function App() {
             links: []
           };
 
-          dataArrays.forEach(data => {
+          dataArrays.forEach((data, index) => {
+            console.log(`Processing file: ${sessionFiles[index]}`, data);
+            
             if (data.utterances) {
               const nodes = data.utterances.map(utterance => ({
                 id: utterance.index,
@@ -59,8 +63,9 @@ function App() {
 
               mergedData.nodes.push(...nodes);
               mergedData.links.push(...links);
+            }else {
+              console.warn(`No utterances in file: ${sessionFiles[index]}`);
             }
-
             if (data.words) {
               const wordsNodes = data.words.map(word => ({
                 id: word.start,
@@ -79,8 +84,9 @@ function App() {
 
               mergedData.nodes.push(...wordsNodes);
               mergedData.links.push(...wordsLinks);
-            }
-          });
+            }else {
+              console.warn(`No words in file: ${sessionFiles[index]}`);
+          };
 
           // Remove duplicate nodes based on id
           const uniqueNodes = Array.from(new Map(mergedData.nodes.map(node => [node.id, node])).values());
@@ -90,10 +96,9 @@ function App() {
             nodes: uniqueNodes,
             links: uniqueLinks
           });
-        };
-
+        });
         fetchData();
-      } catch (error) {
+      }} catch (error) {
         console.error('Error fetching JSON data:', error);
       }
     };
