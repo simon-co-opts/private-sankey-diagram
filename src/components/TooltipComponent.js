@@ -1,20 +1,19 @@
 import React from 'react';
 
 const TooltipComponent = ({ data }) => {
-  if (!data) return null;
-
   return (
-    <div style={{
-      position: 'absolute',
-      top: `${data.y0}px`,
-      left: `${data.x1 + 5}px`,
-      background: 'white',
-      border: '1px solid black',
-      padding: '5px',
-      borderRadius: '5px'
-    }}>
-      <p>{data.name}</p>
-      <p>Value: {data.value}</p>
+    <div
+      style={{
+        position: 'absolute',
+        backgroundColor: '#fff',
+        border: '1px solid #ddd',
+        padding: '5px',
+        pointerEvents: 'none',
+        left: `${data.x0}px`,
+        top: `${data.y0}px`
+      }}
+    >
+      <strong>{data.name}</strong>
     </div>
   );
 };

@@ -36,3 +36,42 @@
     transform: rotate(360deg);
   }
 }
+
+.sankey-link {
+  fill: none;
+  stroke: #000;
+  stroke-opacity: 0.2;
+  transition: stroke-opacity 0.3s;
+}
+
+.sankey-link:hover {
+  stroke-opacity: 0.7;
+}
+
+.sankey-node rect {
+  fill: #69b3a2;
+  stroke: #000;
+  stroke-width: 1.5;
+  transition: fill 0.3s;
+}
+
+.sankey-node rect:hover {
+  fill: #3b7d64;
+}
+
+.sankey-label {
+  font-family: sans-serif;
+  font-size: 10px;
+  pointer-events: none;
+}
+
+.tooltip {
+  position: absolute;
+  padding: 10px;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  border-radius: 4px;
+  pointer-events: none;
+  font-size: 12px;
+  text-align: center;
+}
