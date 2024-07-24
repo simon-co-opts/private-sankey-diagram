@@ -2,13 +2,15 @@ import React from 'react';
 import { sankeyLinkHorizontal } from 'd3-sankey';
 
 const LinkComponent = ({ link }) => {
+  const path = sankeyLinkHorizontal();
+
   return (
     <path
-      d={sankeyLinkHorizontal()(link)}
+      d={path(link)}
       style={{
         fill: 'none',
-        strokeOpacity: 0.2,
         stroke: '#000',
+        strokeOpacity: 0.5,
         strokeWidth: Math.max(1, link.width)
       }}
     />

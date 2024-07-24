@@ -7,11 +7,12 @@ const NodeComponent = ({ node, setTooltipData }) => {
   useEffect(() => {
     const nodeElement = d3.select(nodeRef.current);
 
+    // Ensure node dimensions and position are correctly set
     nodeElement
       .attr('x', node.x0)
       .attr('y', node.y0)
-      .attr('height', node.y1 - node.y0)
       .attr('width', node.x1 - node.x0)
+      .attr('height', node.y1 - node.y0)
       .style('fill', '#69b3a2')
       .style('stroke', '#000')
       .style('stroke-width', '1.5')
@@ -32,18 +33,32 @@ const NodeComponent = ({ node, setTooltipData }) => {
           node.fy = null;
         })
       )
-      .on('mouseover', () => setTooltipData(node))
+      .on('mouseover', () => setTooltipData({
+        x: node.x0,
+        y: node.y0,
+        name: node.name,
+        value: node.value
+      }))
       .on('mouseout', () => setTooltipData(null));
 
   }, [node, setTooltipData]);
 
   return (
-    <rect
-      ref={nodeRef}
-      className="node"
-    >
-      <title>{node.name}</title>
-    </rect>
+    <g>
+      <rect
+        ref={nodeRef}
+        className="node"
+      />
+      <text
+        x={node.x0 < 960 / 2 ? 6 + (node.x1 - node.x0) : -6}
+        y={(node.y1 - node.y0) / 2}
+        dy=".35em"
+        textAnchor={node.x0 < 960 / 2 ? 'start' : 'end'}
+        fill="#000"
+      >
+        {node.name}
+      </text>
+    </g>
   );
 };
 

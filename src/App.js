@@ -1,25 +1,24 @@
 import React, { useState, useEffect } from 'react';
-import SankeyDiagram from './SankeyDiagram';
+import SankeyDiagram from './SankeyDiagram'; // Ensure correct path
 import sessionsList from './data/sessionsList.json';
 
-console.log('sessionsList:', sessionsList);
-
 function App() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState({ nodes: [], links: [] });
+  const [selectedSession, setSelectedSession] = useState('');
+  const [filterType, setFilterType] = useState('default');
+  const [topWords, setTopWords] = useState(5);
 
   useEffect(() => {
     const loadSessionData = async () => {
-      console.log('sessionsList:', sessionsList); // Verify the structure
-
-      const sessionFiles = sessionsList; // This should be an array of filenames
-      if (!Array.isArray(sessionFiles) || sessionFiles.length === 0) {
-        console.error('No files found in sessionsList');
-        return;
-      }
-
       try {
+        const sessionFiles = sessionsList;
+
+        if (!Array.isArray(sessionFiles) || sessionFiles.length === 0) {
+          console.error('No files found in sessionsList');
+          return;
+        }
+
         const fetchData = async () => {
-          // Use sessionFiles array to fetch each file
           const dataPromises = sessionFiles.map(file =>
             fetch(`/data/${file}`)
               .then(response => {
@@ -31,74 +30,41 @@ function App() {
           );
 
           const dataArrays = await Promise.all(dataPromises);
-          
-          console.log('Fetched data:', dataArrays); // Debugging line
 
-          // Initialize the mergedData object
-          const mergedData = {
-            nodes: [],
-            links: []
-          };
+          const wordFrequencyMap = {};
 
           dataArrays.forEach((data, index) => {
-            console.log(`Processing file: ${sessionFiles[index]}`, data);
-            
-            if (data.utterances) {
-              const nodes = data.utterances.map(utterance => ({
-                id: utterance.index,
-                name: utterance.text,
-                start: utterance.start,
-                end: utterance.end,
-                speaker: utterance.speaker
-              }));
-
-              const links = data.utterances.flatMap(utterance => 
-                utterance.words.map(word => ({
-                  source: word.start,
-                  target: word.end,
-                  value: 1,
-                  speaker: word.speaker
-                }))
-              );
-
-              mergedData.nodes.push(...nodes);
-              mergedData.links.push(...links);
-            }else {
-              console.warn(`No utterances in file: ${sessionFiles[index]}`);
+            if (data["word frequencies"]) {
+              Object.entries(data["word frequencies"]).forEach(([word, frequency]) => {
+                if (!wordFrequencyMap[word]) {
+                  wordFrequencyMap[word] = 0;
+                }
+                wordFrequencyMap[word] += frequency;
+              });
+            } else {
+              console.warn(`No word frequencies in file: ${sessionFiles[index]}`);
             }
-            if (data.words) {
-              const wordsNodes = data.words.map(word => ({
-                id: word.start,
-                name: word.text,
-                start: word.start,
-                end: word.end,
-                speaker: word.speaker
-              }));
+          });
 
-              const wordsLinks = data.words.map(word => ({
-                source: word.start,
-                target: word.end,
-                value: 1,
-                speaker: word.speaker
-              }));
+          const nodes = Object.keys(wordFrequencyMap).map(word => ({
+            id: word,
+            name: word,
+          }));
 
-              mergedData.nodes.push(...wordsNodes);
-              mergedData.links.push(...wordsLinks);
-            }else {
-              console.warn(`No words in file: ${sessionFiles[index]}`);
-          };
-
-          // Remove duplicate nodes based on id
-          const uniqueNodes = Array.from(new Map(mergedData.nodes.map(node => [node.id, node])).values());
-          const uniqueLinks = mergedData.links;
+          const links = Object.entries(wordFrequencyMap).map(([word, frequency]) => ({
+            source: word,
+            target: "Total", // Use a common target node to represent the total frequency
+            value: frequency,
+          }));
 
           setData({
-            nodes: uniqueNodes,
-            links: uniqueLinks
+            nodes: [...nodes, { id: "Total", name: "Total" }],
+            links: links,
           });
-        });
+        };
+
         fetchData();
-      }} catch (error) {
+      } catch (error) {
         console.error('Error fetching JSON data:', error);
       }
     };
@@ -106,10 +72,45 @@ function App() {
     loadSessionData();
   }, []);
 
+  const handleSessionChange = (event) => {
+    setSelectedSession(event.target.value);
+  };
+
+  const handleFilterTypeChange = (event) => {
+    setFilterType(event.target.value);
+  };
+
+  const handleTopWordsChange = (event) => {
+    setTopWords(Number(event.target.value));
+  };
+
   return (
     <div className="App">
       <h1>Sankey Diagram</h1>
-      {data ? <SankeyDiagram data={data} /> : <p>Loading...</p>}
+      <div className="filter-container">
+        <select onChange={handleSessionChange} value={selectedSession}>
+          <option value="">All Sessions</option>
+          {sessionsList.map((session, index) => (
+            <option key={index} value={session}>{session}</option>
+          ))}
+        </select>
+
+        <select onChange={handleFilterTypeChange} value={filterType}>
+          <option value="default">Select</option>
+          <option value="type1">Words</option>
+          <option value="type2">Utterances</option>
+        </select>
+
+        <input
+          type="range"
+          min="5"
+          max="25"
+          value={topWords}
+          onChange={handleTopWordsChange}
+        />
+        <label>{topWords} Frequently Used Words </label>
+      </div>
+      <SankeyDiagram data={data} selectedSession={selectedSession} topWords={topWords} />
     </div>
   );
 }
