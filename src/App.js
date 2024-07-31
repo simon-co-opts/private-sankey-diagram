@@ -3,9 +3,8 @@ import SankeyDiagram from './SankeyDiagram'; // Ensure correct path
 import sessionsList from './data/sessionsList.json';
 
 function App() {
-  const [data, setData] = useState({ nodes: [], links: [] });
-  const [selectedSession, setSelectedSession] = useState('');
-  const [filterType, setFilterType] = useState('default');
+  const [data, setData] = useState(null);
+  const [selectedSession, setSelectedSession] = useState(null);
   const [topWords, setTopWords] = useState(5);
 
   useEffect(() => {
@@ -31,36 +30,12 @@ function App() {
 
           const dataArrays = await Promise.all(dataPromises);
 
-          const wordFrequencyMap = {};
-
-          dataArrays.forEach((data, index) => {
-            if (data["word frequencies"]) {
-              Object.entries(data["word frequencies"]).forEach(([word, frequency]) => {
-                if (!wordFrequencyMap[word]) {
-                  wordFrequencyMap[word] = 0;
-                }
-                wordFrequencyMap[word] += frequency;
-              });
-            } else {
-              console.warn(`No word frequencies in file: ${sessionFiles[index]}`);
-            }
-          });
-
-          const nodes = Object.keys(wordFrequencyMap).map(word => ({
-            id: word,
-            name: word,
+          const wordFrequencyMap = dataArrays.map((data, index) => ({
+            sessionName: sessionFiles[index],
+            wordFrequencies: data["word frequencies"] || {}
           }));
 
-          const links = Object.entries(wordFrequencyMap).map(([word, frequency]) => ({
-            source: word,
-            target: "Total", // Use a common target node to represent the total frequency
-            value: frequency,
-          }));
-
-          setData({
-            nodes: [...nodes, { id: "Total", name: "Total" }],
-            links: links,
-          });
+          setData(wordFrequencyMap);
         };
 
         fetchData();
@@ -76,29 +51,52 @@ function App() {
     setSelectedSession(event.target.value);
   };
 
-  const handleFilterTypeChange = (event) => {
-    setFilterType(event.target.value);
-  };
-
   const handleTopWordsChange = (event) => {
     setTopWords(Number(event.target.value));
   };
+
+  const filterData = (data, selectedSession, topWords) => {
+    if (!data) return [];
+
+    if (!selectedSession) {
+      return data.map(sessionData => {
+        const filteredWords = Object.entries(sessionData.wordFrequencies)
+          .sort(([, a], [, b]) => b - a)
+          .slice(0, topWords)
+          .map(([word, frequency]) => ({ word, frequency }));
+
+        return {
+          sessionName: sessionData.sessionName,
+          wordFrequencies: Object.fromEntries(filteredWords.map(({ word, frequency }) => [word, frequency]))
+        };
+      });
+    }
+
+    const sessionData = data.find(d => d.sessionName === selectedSession);
+    if (!sessionData) return [];
+
+    const filteredWords = Object.entries(sessionData.wordFrequencies)
+      .sort(([, a], [, b]) => b - a)
+      .slice(0, topWords)
+      .map(([word, frequency]) => ({ word, frequency }));
+
+    return [{
+      sessionName: sessionData.sessionName,
+      wordFrequencies: Object.fromEntries(filteredWords.map(({ word, frequency }) => [word, frequency]))
+    }];
+  };
+
+  const filteredData = filterData(data, selectedSession, topWords);
 
   return (
     <div className="App">
       <h1>Sankey Diagram</h1>
       <div className="filter-container">
-        <select onChange={handleSessionChange} value={selectedSession}>
+        <select onChange={handleSessionChange}>
           <option value="">All Sessions</option>
           {sessionsList.map((session, index) => (
             <option key={index} value={session}>{session}</option>
           ))}
-        </select>
-
-        <select onChange={handleFilterTypeChange} value={filterType}>
-          <option value="default">Select</option>
-          <option value="type1">Words</option>
-          <option value="type2">Utterances</option>
         </select>
 
         <input
@@ -108,9 +106,9 @@ function App() {
           value={topWords}
           onChange={handleTopWordsChange}
         />
-        <label>{topWords} Frequently Used Words </label>
+        <label>{topWords} Frequently Used Words</label>
       </div>
-      <SankeyDiagram data={data} selectedSession={selectedSession} topWords={topWords} />
+      {data ? <SankeyDiagram data={filteredData} /> : <p>Loading...</p>}
     </div>
   );
 }

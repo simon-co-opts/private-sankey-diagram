@@ -1,0 +1,156 @@
+{
+  "nodes": [
+    {
+      "id": "feel-0",
+      "name": "feel",
+      "group": 0,
+      "description": 27
+    },
+    {
+      "id": "critic-0",
+      "name": "critic",
+      "group": 0,
+      "description": 27
+    },
+    {
+      "id": "things-0",
+      "name": "things",
+      "group": 0,
+      "description": 23
+    },
+    {
+      "id": "moment-0",
+      "name": "moment",
+      "group": 0,
+      "description": 20
+    },
+    {
+      "id": "coming-0",
+      "name": "coming",
+      "group": 0,
+      "description": 13
+    },
+    {
+      "id": "anger-1",
+      "name": "anger",
+      "group": 1,
+      "description": 30
+    },
+    {
+      "id": "feel-1",
+      "name": "feel",
+      "group": 1,
+      "description": 25
+    },
+    {
+      "id": "people-1",
+      "name": "people",
+      "group": 1,
+      "description": 19
+    },
+    {
+      "id": "things-1",
+      "name": "things",
+      "group": 1,
+      "description": 17
+    },
+    {
+      "id": "life-1",
+      "name": "life",
+      "group": 1,
+      "description": 15
+    },
+    {
+      "id": "week-2",
+      "name": "week",
+      "group": 2,
+      "description": 21
+    },
+    {
+      "id": "sort-2",
+      "name": "sort",
+      "group": 2,
+      "description": 19
+    },
+    {
+      "id": "mum-2",
+      "name": "mum",
+      "group": 2,
+      "description": 16
+    },
+    {
+      "id": "feel-2",
+      "name": "feel",
+      "group": 2,
+      "description": 15
+    },
+    {
+      "id": "things-2",
+      "name": "things",
+      "group": 2,
+      "description": 12
+    },
+    {
+      "id": "week-3",
+      "name": "week",
+      "group": 3,
+      "description": 17
+    },
+    {
+      "id": "things-3",
+      "name": "things",
+      "group": 3,
+      "description": 15
+    },
+    {
+      "id": "life-3",
+      "name": "life",
+      "group": 3,
+      "description": 14
+    },
+    {
+      "id": "bit-3",
+      "name": "bit",
+      "group": 3,
+      "description": 14
+    },
+    {
+      "id": "people-3",
+      "name": "people",
+      "group": 3,
+      "description": 12
+    }
+  ],
+  "links": [
+    {
+      "source": "feel-0",
+      "target": "feel-1",
+      "value": 25
+    },
+    {
+      "source": "things-0",
+      "target": "things-1",
+      "value": 17
+    },
+    {
+      "source": "feel-1",
+      "target": "feel-2",
+      "value": 15
+    },
+    {
+      "source": "things-1",
+      "target": "things-2",
+      "value": 12
+    },
+    {
+      "source": "week-2",
+      "target": "week-3",
+      "value": 17
+    },
+    {
+      "source": "things-2",
+      "target": "things-3",
+      "value": 12
+    }
+  ]
+}

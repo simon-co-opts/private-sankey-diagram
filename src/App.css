@@ -37,6 +37,13 @@
   }
 }
 
+.sankey-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh; /* or any height you need */
+}
+
 .sankey-link {
   fill: none;
   stroke: #000;
@@ -75,3 +82,4 @@
   font-size: 12px;
   text-align: center;
 }
+
