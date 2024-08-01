@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import SankeyDiagram from './SankeyDiagram'; // Ensure correct path
+import SankeyDiagram from './visualisation/SankeyDiagram'; // Ensure correct path
 import sessionsList from './data/sessionsList.json';
 
 function App() {
@@ -19,7 +19,7 @@ function App() {
 
         const fetchData = async () => {
           const dataPromises = sessionFiles.map(file =>
-            fetch(`/data/${file}`)
+            fetch(`testData/${file}`)
               .then(response => {
                 if (!response.ok) {
                   throw new Error(`HTTP error! Status: ${response.status}`);
