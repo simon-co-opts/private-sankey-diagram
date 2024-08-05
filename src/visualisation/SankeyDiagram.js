@@ -1,7 +1,7 @@
 import React, { useRef, useEffect, useState } from 'react';
 import * as d3 from 'd3';
 import { sankey, sankeyLinkHorizontal } from 'd3-sankey';
-import TooltipComponent from './components/TooltipComponent'; // Ensure correct import path
+import TooltipComponent from '../components/TooltipComponent'; // Ensure correct import path
 
 const convertDataForSankey = (data) => {
   const nodeMap = new Map();

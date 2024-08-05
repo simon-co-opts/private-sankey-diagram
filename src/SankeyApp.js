@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import SankeyDiagram from './SankeyDiagram'; // Ensure correct path
+import { v4 as uuidv4 } from 'uuid';
+import SankeyDiagram from './visualisation/SankeyDiagram'; // Ensure correct path
 import sessionsList from './data/sessionsList.json';
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
 
         const fetchData = async () => {
           const dataPromises = sessionFiles.map(file =>
-            fetch(`/data/${file}`)
+            fetch(`testData/${file}`)
               .then(response => {
                 if (!response.ok) {
                   throw new Error(`HTTP error! Status: ${response.status}`);
@@ -31,6 +32,7 @@ function App() {
           const dataArrays = await Promise.all(dataPromises);
 
           const wordFrequencyMap = dataArrays.map((data, index) => ({
+            id: uuidv4(),
             sessionName: sessionFiles[index],
             wordFrequencies: data["word frequencies"] || {}
           }));
@@ -66,7 +68,7 @@ function App() {
           .map(([word, frequency]) => ({ word, frequency }));
 
         return {
-          sessionName: sessionData.sessionName,
+          ...sessionData,
           wordFrequencies: Object.fromEntries(filteredWords.map(({ word, frequency }) => [word, frequency]))
         };
       });
@@ -81,7 +83,7 @@ function App() {
       .map(([word, frequency]) => ({ word, frequency }));
 
     return [{
-      sessionName: sessionData.sessionName,
+      ...sessionData,
       wordFrequencies: Object.fromEntries(filteredWords.map(({ word, frequency }) => [word, frequency]))
     }];
   };

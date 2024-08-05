@@ -1,5 +1,9 @@
 // Therapy Data Tracking List
 
+// Give all json files uuids
+    // npm install uuid 
+    
+
 // Track all words
     // create a stop words list
     // create a function to filter out stop words 
@@ -44,3 +48,15 @@
 // Create a function to filter the diagram to display all outputs by speaker
 
 // Create a function to link words by id to the tree diagram
+
+//0: Object {
+//     id:01{                      
+//     speaker: "a"
+//     word: "feel"
+//     value: 1
+//   }}
+
+// add an id all words
+// count words by speaker
+// count word freqeuncy for each speaker
+// create a word frequency object
