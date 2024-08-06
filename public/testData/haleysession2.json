@@ -52463,8 +52463,206 @@
     }
   },
   "summary": {
-    "A": {},
-    "B": {},
-    "C": {}
+    "A": {
+      "19": {
+        "index": 19,
+        "speaker": "A",
+        "text": "Which is probably why I feel nervous, but, yeah, it's completely cracked everything open.",
+        "start": 184746,
+        "end": 188644,
+        "confidence": 0.94057,
+        "word_count": 14,
+        "tokenised_word_count": 1431,
+        "score": 31,
+        "density": 2.2142857142857144,
+        "percentile": 100.0
+      },
+      "30": {
+        "index": 30,
+        "speaker": "A",
+        "text": "And it's like, okay, so now we've hit the real stuff. The main point of it is it's really hard, um, to deal with the inner critic when I feel in my life that so many outer critics.",
+        "start": 307010,
+        "end": 318780,
+        "confidence": 0.950076080326783,
+        "word_count": 38,
+        "tokenised_word_count": 1431,
+        "score": 71,
+        "density": 1.868421052631579,
+        "percentile": 100.0
+      },
+      "78": {
+        "index": 78,
+        "speaker": "A",
+        "text": "The thing that doesn't sit with me, I, uh, realize that there's an area that others can see things in you that you can't see in yourself. The thing that never sits with me is, I don't call it anger. I call it deep sorrow. Anger doesn't sit with me, I get angry at animal abuse. That makes me angry. That makes me really angry. But I don't feel anger.",
+        "start": 1314400,
+        "end": 1335470,
+        "confidence": 0.9465532857142858,
+        "word_count": 70,
+        "tokenised_word_count": 1431,
+        "score": 119,
+        "density": 1.7,
+        "percentile": 80.0
+      },
+      "135": {
+        "index": 135,
+        "speaker": "A",
+        "text": "Okay. Yeah. It feels like I'm on the right track. Ah, it's okay. I feel okay.",
+        "start": 2086400,
+        "end": 2093290,
+        "confidence": 0.951529375,
+        "word_count": 16,
+        "tokenised_word_count": 1431,
+        "score": 31,
+        "density": 1.9375,
+        "percentile": 100.0
+      }
+    },
+    "B": {
+      "10": {
+        "index": 10,
+        "speaker": "B",
+        "text": "Good afternoon, haley. How are you doing? Yeah, not too bad. How are you doing? You feel really nervous?",
+        "start": 137820,
+        "end": 145640,
+        "confidence": 0.8472710526315792,
+        "word_count": 19,
+        "tokenised_word_count": 1431,
+        "score": 34,
+        "density": 1.7894736842105263,
+        "percentile": 80.0
+      },
+      "47": {
+        "index": 47,
+        "speaker": "B",
+        "text": "So your inner critic has taken the anger that actually is suitably placed towards your mum and is turning it against you.",
+        "start": 804146,
+        "end": 811772,
+        "confidence": 0.961212272727273,
+        "word_count": 22,
+        "tokenised_word_count": 1431,
+        "score": 53,
+        "density": 2.409090909090909,
+        "percentile": 100.0
+      },
+      "49": {
+        "index": 49,
+        "speaker": "B",
+        "text": "But we can't change the relationship between your brother and your mum.",
+        "start": 846620,
+        "end": 850472,
+        "confidence": 0.9883808333333333,
+        "word_count": 12,
+        "tokenised_word_count": 1431,
+        "score": 25,
+        "density": 2.0833333333333335,
+        "percentile": 100.0
+      },
+      "59": {
+        "index": 59,
+        "speaker": "B",
+        "text": "Because what I feel is your frustration.",
+        "start": 985610,
+        "end": 987480,
+        "confidence": 0.9282242857142858,
+        "word_count": 7,
+        "tokenised_word_count": 1431,
+        "score": 25,
+        "density": 3.5714285714285716,
+        "percentile": 100.0
+      },
+      "69": {
+        "index": 69,
+        "speaker": "B",
+        "text": "Didn'T come here for me to confirm everything that you've told yourself in the past. You came here because there's a place in you that knows that not only could things be different, things could be different, but things need to be different.",
+        "start": 1091614,
+        "end": 1106924,
+        "confidence": 0.9797360465116279,
+        "word_count": 43,
+        "tokenised_word_count": 1431,
+        "score": 66,
+        "density": 1.5348837209302326,
+        "percentile": 40.0
+      },
+      "75": {
+        "index": 75,
+        "speaker": "B",
+        "text": "Feel angry towards your brother?",
+        "start": 1242078,
+        "end": 1243748,
+        "confidence": 0.981912,
+        "word_count": 5,
+        "tokenised_word_count": 1431,
+        "score": 33,
+        "density": 6.6,
+        "percentile": 100.0
+      },
+      "95": {
+        "index": 95,
+        "speaker": "B",
+        "text": "I feel it.",
+        "start": 1617170,
+        "end": 1618110,
+        "confidence": 0.9788899999999999,
+        "word_count": 3,
+        "tokenised_word_count": 1431,
+        "score": 25,
+        "density": 8.333333333333334,
+        "percentile": 100.0
+      },
+      "97": {
+        "index": 97,
+        "speaker": "B",
+        "text": "What do you feel as you say, that? Because I feel your strength.",
+        "start": 1641844,
+        "end": 1646324,
+        "confidence": 0.9940069230769232,
+        "word_count": 13,
+        "tokenised_word_count": 1431,
+        "score": 50,
+        "density": 3.8461538461538463,
+        "percentile": 100.0
+      },
+      "120": {
+        "index": 120,
+        "speaker": "B",
+        "text": "And your feelings do matter.",
+        "start": 1940300,
+        "end": 1941720,
+        "confidence": 0.915508,
+        "word_count": 5,
+        "tokenised_word_count": 1431,
+        "score": 9,
+        "density": 1.8,
+        "percentile": 80.0
+      },
+      "134": {
+        "index": 134,
+        "speaker": "B",
+        "text": "And when it comes to creating change in our life, often the hardest thing is to get the ball rolling. It's like taking a car from stationary to 10 miles an hour takes more power than from 10 miles an hour to 20 miles an hour. So what we're doing is getting things moving. Keeping things moving is easier.",
+        "start": 2068980,
+        "end": 2086320,
+        "confidence": 0.9488169491525422,
+        "word_count": 59,
+        "tokenised_word_count": 1431,
+        "score": 88,
+        "density": 1.4915254237288136,
+        "percentile": 20.0
+      }
+    },
+    "C": {
+      "99": {
+        "index": 99,
+        "speaker": "C",
+        "text": "Learning to feel your emotions is not just important from the point of view of not carrying those old emotions in our physical and our emotional body. It's also important because our emotions have gifts to bring us in our life. People often think about anger as something to get rid of, to get away from. Now, as I talked with Haley about, it's not about throwing anger at other people, but the life force of our anger is our strength. It's our capacity to go for things we want in our lives, but also to set boundaries, to say no and to feel our strength, our capacity behind that no behind that boundary. And I find working with people that often there is a sequence to being able to really get contact with and learn to heal our emotions in a healthy way. Firstly, we often have to learn to calm and to settle our nervous system because then we are closer to our feelings. But if we don't then work with our emotions, we'll find ourselves then speeding up again, trying to get away from those feelings. And so as we calm our system and feel our emotions, we're then more able to reset the relationships in our lives. If you'd like to learn more about the importance of resetting your nervous system, I have a free three part video series that you can find at ah, reset alexhouer.com. And as part of that free series, you'll also find out more about my online coaching program, the reset program.",
+        "start": 1657680,
+        "end": 1755550,
+        "confidence": 0.9634588505747131,
+        "word_count": 261,
+        "tokenised_word_count": 1431,
+        "score": 408,
+        "density": 1.5632183908045978,
+        "percentile": 59.99999999999999
+      }
+    }
   }
 }
