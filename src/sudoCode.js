@@ -60,3 +60,4 @@
 // count words by speaker
 // count word freqeuncy for each speaker
 // create a word frequency object
+

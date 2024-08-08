@@ -30,11 +30,13 @@ function App() {
           );
 
           const dataArrays = await Promise.all(dataPromises);
-
           const wordFrequencyMap = dataArrays.map((data, index) => ({
             id: uuidv4(),
             sessionName: sessionFiles[index],
-            wordFrequencies: data["word frequencies"] || {}
+            wordFrequencies: data['word frequencies'].reduce((acc, item) => {
+              acc[item.name1] = item.value;
+              return acc;
+            }, {})
           }));
 
           setData(wordFrequencyMap);
@@ -42,7 +44,7 @@ function App() {
 
         fetchData();
       } catch (error) {
-        console.error('Error fetching JSON data:', error);
+        console.error('Error loading session data:', error);
       }
     };
 
@@ -57,38 +59,27 @@ function App() {
     setTopWords(Number(event.target.value));
   };
 
-  const filterData = (data, selectedSession, topWords) => {
+  const filterData = (data) => {
     if (!data) return [];
 
-    if (!selectedSession) {
-      return data.map(sessionData => {
-        const filteredWords = Object.entries(sessionData.wordFrequencies)
-          .sort(([, a], [, b]) => b - a)
-          .slice(0, topWords)
-          .map(([word, frequency]) => ({ word, frequency }));
-
-        return {
-          ...sessionData,
-          wordFrequencies: Object.fromEntries(filteredWords.map(({ word, frequency }) => [word, frequency]))
-        };
-      });
+    if (selectedSession) {
+      const sessionData = data.find(d => d.sessionName === selectedSession);
+      if (!sessionData) return [];
+      const filteredWords = Object.entries(sessionData.wordFrequencies)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, topWords);
+      return [{ ...sessionData, wordFrequencies: Object.fromEntries(filteredWords) }];
     }
 
-    const sessionData = data.find(d => d.sessionName === selectedSession);
-    if (!sessionData) return [];
-
-    const filteredWords = Object.entries(sessionData.wordFrequencies)
-      .sort(([, a], [, b]) => b - a)
-      .slice(0, topWords)
-      .map(([word, frequency]) => ({ word, frequency }));
-
-    return [{
-      ...sessionData,
-      wordFrequencies: Object.fromEntries(filteredWords.map(({ word, frequency }) => [word, frequency]))
-    }];
+    return data.map(sessionData => {
+      const filteredWords = Object.entries(sessionData.wordFrequencies)
+        .sort(([, a], [, b]) => b - a)
+        .slice(0, topWords);
+      return { ...sessionData, wordFrequencies: Object.fromEntries(filteredWords) };
+    });
   };
 
-  const filteredData = filterData(data, selectedSession, topWords);
+  const filteredData = filterData(data);
 
   return (
     <div className="App">
@@ -100,7 +91,6 @@ function App() {
             <option key={index} value={session}>{session}</option>
           ))}
         </select>
-
         <input
           type="range"
           min="5"
