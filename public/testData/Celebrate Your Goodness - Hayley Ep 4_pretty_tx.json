@@ -44432,7 +44432,8 @@
             "score": 0
         }
     ],
-        "word frequencies": [
+    "word frequencies": {
+    "session 1": [
           { "name1": "feel", "value": 27, "index": 0 },
           { "name1": "critic", "value": 27, "index": 1 },
           { "name1": "things", "value": 23, "index": 2 },
@@ -44679,7 +44680,8 @@
           { "name1": "invite", "value": 2, "index": 243 },
           { "name1": "infrequently used", "value": 2, "index": 244 },
           { "name1": "not used", "value": 0, "index": 245 }
-      ],
+      ]
+    },
     "summary": {
         "3": {
             "index": 3,
