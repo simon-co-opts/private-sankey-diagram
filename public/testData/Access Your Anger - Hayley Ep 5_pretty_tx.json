@@ -52227,7 +52227,7 @@
             "score": 0
         }
     ],
-    "session 2": {
+    "session": "session 2",
     "word frequencies": [
         { "word": "anger", "value": 30, "index": 246 },
         { "word": "feel", "value": 25, "index": 247 },
@@ -52494,8 +52494,7 @@
         { "word": "truth", "value": 2, "index": 508 },
         { "word": "infrequently used", "value": 2, "index": 509 },
         { "word": "not used", "value": 0, "index": 510 }
-    ]
-},
+    ],
     "summary": {
         "10": {
             "index": 10,

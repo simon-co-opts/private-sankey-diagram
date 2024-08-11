@@ -44432,7 +44432,7 @@
             "score": 0
         }
     ],
-        "session 1": {
+        "session":"session 1",
          "word frequencies": [    
             { "word": "feel", "value": 27, "index": 0 },
             { "word": "critic", "value": 27, "index": 1 },
@@ -44677,11 +44677,8 @@
             { "word": "treat", "value": 2, "index": 240 },
             { "word": "dynamic", "value": 2, "index": 241 },
             { "word": "attract", "value": 2, "index": 242 },
-            { "word": "invite", "value": 2, "index": 243 },
-            { "word": "infrequently used", "value": 2, "index": 244 },
-            { "word": "not used", "value": 0, "index": 245 }
-      ]
-    },
+            { "word": "invite", "value": 2, "index": 243 }
+      ],
     "summary": {
         "3": {
             "index": 3,

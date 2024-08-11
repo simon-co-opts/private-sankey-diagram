@@ -1,25 +1,19 @@
 import React, { useState, useEffect } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import SankeyDiagram from './visualisation/SankeyDiagram'; // Ensure correct path
-import sessionsList from './data/sessionsList.json';
+import sessionsList from './data/sessionsList.json'; // Ensure correct path
 
 function App() {
-  const [data, setData] = useState(null);
+  const [data, setData] = useState([]);
   const [selectedSession, setSelectedSession] = useState(null);
   const [topWords, setTopWords] = useState(5);
 
   useEffect(() => {
     const loadSessionData = async () => {
       try {
-        const sessionFiles = sessionsList;
-
-        if (!Array.isArray(sessionFiles) || sessionFiles.length === 0) {
-          console.error('No files found in sessionsList');
-          return;
-        }
-
+        // Fetch data for each session
         const fetchData = async () => {
-          const dataPromises = sessionFiles.map(file =>
+          // Map session files to their fetch requests
+          const dataPromises = sessionsList.map(file =>
             fetch(`testData/${file}`)
               .then(response => {
                 if (!response.ok) {
@@ -29,22 +23,23 @@ function App() {
               })
           );
 
+          // Await all the fetch requests
           const dataArrays = await Promise.all(dataPromises);
+
+          // Transform data into the desired format
           const wordFrequencyMap = dataArrays.map((data, index) => ({
-            id: uuidv4(),
-            sessionName: sessionFiles[index],
-            wordFrequencies: data['word frequencies'].reduce((acc, item) => {
-              acc[item.name1] = item.value;
-              return acc;
-            }, {})
+            sessionName: sessionsList[index],
+            wordFrequencies: data["word frequencies"] || []
           }));
+
+          console.log('Fetched Data:', wordFrequencyMap);
 
           setData(wordFrequencyMap);
         };
 
         fetchData();
       } catch (error) {
-        console.error('Error loading session data:', error);
+        console.error('Error fetching JSON data:', error);
       }
     };
 
@@ -59,27 +54,36 @@ function App() {
     setTopWords(Number(event.target.value));
   };
 
-  const filterData = (data) => {
+  const filterData = (data, selectedSession, topWords) => {
     if (!data) return [];
 
-    if (selectedSession) {
-      const sessionData = data.find(d => d.sessionName === selectedSession);
-      if (!sessionData) return [];
-      const filteredWords = Object.entries(sessionData.wordFrequencies)
-        .sort(([, a], [, b]) => b - a)
-        .slice(0, topWords);
-      return [{ ...sessionData, wordFrequencies: Object.fromEntries(filteredWords) }];
+    if (!selectedSession) {
+      return data.map(sessionData => {
+        const filteredWords = sessionData.wordFrequencies
+          .sort((a, b) => b.value - a.value)
+          .slice(0, topWords);
+
+        return {
+          ...sessionData,
+          wordFrequencies: filteredWords
+        };
+      });
     }
 
-    return data.map(sessionData => {
-      const filteredWords = Object.entries(sessionData.wordFrequencies)
-        .sort(([, a], [, b]) => b - a)
-        .slice(0, topWords);
-      return { ...sessionData, wordFrequencies: Object.fromEntries(filteredWords) };
-    });
+    const sessionData = data.find(d => d.sessionName === selectedSession);
+    if (!sessionData) return [];
+
+    const filteredWords = sessionData.wordFrequencies
+      .sort((a, b) => b.value - a.value)
+      .slice(0, topWords);
+
+    return [{
+      ...sessionData,
+      wordFrequencies: filteredWords
+    }];
   };
 
-  const filteredData = filterData(data);
+  const filteredData = filterData(data, selectedSession, topWords);
 
   return (
     <div className="App">
@@ -91,6 +95,7 @@ function App() {
             <option key={index} value={session}>{session}</option>
           ))}
         </select>
+
         <input
           type="range"
           min="5"
@@ -100,7 +105,7 @@ function App() {
         />
         <label>{topWords} Frequently Used Words</label>
       </div>
-      {data ? <SankeyDiagram data={filteredData} /> : <p>Loading...</p>}
+      {data.length > 0 ? <SankeyDiagram sessions={filteredData} /> : <p>Loading...</p>}
     </div>
   );
 }

@@ -46278,7 +46278,7 @@
             "score": 0
         }
     ],
-    "session 4": {
+    "session": "session 4",
     "word frequencies": [    
         { "word": "week", "value": 17, "index": 744 },
         { "word": "things", "value": 15, "index": 745 },
@@ -46529,9 +46529,8 @@
         { "word": "tree", "value": 2, "index": 990 },
         { "word": "drunks", "value": 2, "index": 991 },
         { "word": "infrequently used", "value": 2, "index": 992 },
-        { "word": "not used", "value": 2, "index": 993 }
-    ]
-    },
+        { "word": "not used", "value": 0, "index": 993 }
+    ],
     "summary": {
         "0": {
             "index": 0,

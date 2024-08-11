@@ -40973,7 +40973,7 @@
             "score": 0
         }
     ],
-    "session 3": {
+    "session": "session 3",
     "word frequencies": [
         { "word": "week", "value": 21, "index": 511 },
         { "word": "sort", "value": 19, "index": 512 },
@@ -41207,9 +41207,8 @@
         { "word": "younger", "value": 2, "index": 740 },
         { "word": "episodes", "value": 2, "index": 741 },
         { "word": "infrequently used", "value": 2, "index": 742 },
-        { "word": "not used", "value": 2, "index": 743 }
-    ]
-},
+        { "word": "not used", "value": 0, "index": 743 }
+    ],
     "summary": {
         "0": {
             "index": 0,
