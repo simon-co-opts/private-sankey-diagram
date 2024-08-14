@@ -1,27 +1,19 @@
+// src/components/Tooltip.js
 import React from 'react';
-import '../styling/Tooltip.css'; // Ensure this path is correct
+import '../styling/Tooltip.css'; // Ensure this file contains styling for your tooltip
 
-const Tooltip = ({ tooltipData, position }) => {
-  if (!tooltipData) return null;
-
+function Tooltip({ tooltipData, position }) {
   return (
     <div
       className="tooltip"
-      style={{ left: position.x, top: position.y, visibility: tooltipData.visible ? 'visible' : 'hidden' }}
+      style={{ left: position.x, top: position.y, position: 'absolute' }}
     >
-      {tooltipData.data.word ? (
-        <>
-          <strong>Word:</strong> {tooltipData.data.word} <br />
-          <strong>Value:</strong> {tooltipData.data.value} <br />
-          {tooltipData.data.target && (
-            <>
-              <strong>Target:</strong> {tooltipData.data.target} <br />
-            </>
-          )}
-        </>
-      ) : null}
+      <div><strong>{tooltipData.name}</strong></div>
+      <div>Value: {tooltipData.value}</div>
+      {tooltipData.target && <div>Target: {tooltipData.target}</div>}
+      {tooltipData.session !== undefined && <div>Session: {tooltipData.session}</div>}
     </div>
   );
-};
+}
 
 export default Tooltip;

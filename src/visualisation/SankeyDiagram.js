@@ -6,78 +6,113 @@ import '../styling/Tooltip.css';
 
 // Updated color schema with specified colors
 const colorSchema = d3.scaleOrdinal()
-  .domain([0, 1, 2, 3, 4, 5, 6, 7])
-  .range(['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd', '#8c564b', '#e377c2', '#7f7f7f']);
+  .domain([1, 2, 3, 4])
+  .range(['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']);
 
-function transformDataToSankeyFormat(sessions) {
+function transformDataToSankeyFormat(sessions, topWords) {
   const nodes = [];
   const links = [];
-  const nodeMap = {};
+  const nodeMap = {}; // Mapping node id to node index in the nodes array
+  const sessionWidth = 100; // Width for each session column
+  const nodePadding = 10; // Padding between nodes
 
-  function addNode(word, sessionIndex, index, value) {
-    const nodeId = `${sessionIndex}-${word}`;
-    if (!nodeMap[nodeId]) {
-      nodes.push({ id: nodeId, name: word, session: sessionIndex, index, value, color: colorSchema(sessionIndex) });
-      nodeMap[nodeId] = nodes.length - 1;
-    }
-  }
-
+  // Add all top words from each session as nodes
   sessions.forEach((session, sessionIndex) => {
-    const topWords = session.wordFrequencies.slice(0, 5).map((w, i) => ({
-      word: w.word,
+    const topWordsList = session.wordFrequencies.slice(0, topWords).map((w, i) => ({
+      name: w.word,
       index: i,
-      value: w.value,
+      value: w.value
     }));
 
-    topWords.forEach(item => {
-      addNode(item.word, sessionIndex, item.index, item.value);
-    });
-
-    const infrequentlyUsed = 'infrequently used';
-    const notUsed = 'not used';
-    const topWordSet = new Set(topWords.map(w => w.word));
-
-    sessions.forEach((_, nextSessionIndex) => {
-      if (nextSessionIndex > sessionIndex && nextSessionIndex === sessionIndex + 1) {
-        const nextSessionWords = sessions[nextSessionIndex].wordFrequencies.slice(0, 5).map(w => w.word);
-
-        nextSessionWords.forEach(word => {
-          if (topWordSet.has(word)) {
-            addNode(word, sessionIndex, topWords.find(w => w.word === word).index, topWords.find(w => w.word === word).value);
-            addNode(word, nextSessionIndex, nextSessionWords.indexOf(word), sessions[nextSessionIndex].wordFrequencies.find(w => w.word === word).value);
-            links.push({
-              source: nodeMap[`${sessionIndex}-${word}`],
-              target: nodeMap[`${nextSessionIndex}-${word}`],
-              value: Math.min(
-                session.wordFrequencies.find(w => w.word === word).value,
-                sessions[nextSessionIndex].wordFrequencies.find(w => w.word === word).value
-              ),
-              targetWord: word
-            });
-          }
+    topWordsList.forEach((item) => {
+      const nodeId = `${sessionIndex + 1}-${item.name}`; // Adjust session index to start from 1
+      if (!nodeMap[nodeId]) {
+        nodes.push({
+          id: nodeId,
+          name: item.name,
+          session: sessionIndex + 1, // Adjust session index to start from 1
+          index: item.index,
+          value: item.value,
+          color: colorSchema(sessionIndex + 1), // Adjust session index to start from 1
+          x0: sessionIndex * (sessionWidth + nodePadding), // Position by session column
+          x1: sessionIndex * (sessionWidth + nodePadding) + sessionWidth
         });
-
-        topWords.forEach((wordObj) => {
-          if (!nextSessionWords.includes(wordObj.word)) {
-            const notUsedNode = `${nextSessionIndex}-${notUsed}`;
-            const infrequentlyUsedNode = `${nextSessionIndex}-${infrequentlyUsed}`;
-
-            if (nextSessionWords.includes(wordObj.word)) {
-              if (!nodeMap[infrequentlyUsedNode]) {
-                addNode(infrequentlyUsed, nextSessionIndex, 6, 1);
-              }
-              links.push({ source: nodeMap[`${sessionIndex}-${wordObj.word}`], target: nodeMap[infrequentlyUsedNode], value: 1 });
-            } else {
-              if (!nodeMap[notUsedNode]) {
-                addNode(notUsed, nextSessionIndex, 7, 1);
-              }
-              links.push({ source: nodeMap[`${sessionIndex}-${wordObj.word}`], target: nodeMap[notUsedNode], value: 1 });
-            }
-          }
-        });
+        nodeMap[nodeId] = nodes.length - 1;
       }
     });
   });
+
+  // Create links between sessions
+  for (let i = 0; i < sessions.length - 1; ++i) {
+    const currentSessionWords = new Set(sessions[i].wordFrequencies.slice(0, topWords).map(w => w.word));
+    const nextSessionWords = sessions[i + 1].wordFrequencies.slice(0, topWords).map(w => w.word);
+
+    // Links for words that are present in both sessions
+    currentSessionWords.forEach(word => {
+      const currentNodeId = `${i + 1}-${word}`;
+      if (nextSessionWords.includes(word)) {
+        const nextNodeId = `${i + 2}-${word}`;
+        links.push({
+          source: nodeMap[currentNodeId],
+          target: nodeMap[nextNodeId],
+          value: Math.min(
+            sessions[i].wordFrequencies.find(w => w.word === word)?.value || 0,
+            sessions[i + 1].wordFrequencies.find(w => w.word === word)?.value || 0
+          )
+        });
+      } else {
+        // Handle nodes that are not used in the next session
+        const infrequentlyUsedNodeId = `${i + 2}-infrequently used`;
+        if (!nodeMap[infrequentlyUsedNodeId]) {
+          nodes.push({
+            id: infrequentlyUsedNodeId,
+            name: 'infrequently used',
+            session: i + 2, // Adjust session index to start from 1
+            index: topWords + 1,
+            value: 25,
+            color: colorSchema(i + 2), // Adjust session index to start from 1
+            x0: (i + 1) * (sessionWidth + nodePadding),
+            x1: (i + 1) * (sessionWidth + nodePadding) + sessionWidth
+          });
+          nodeMap[infrequentlyUsedNodeId] = nodes.length - 1;
+        }
+        links.push({
+          source: nodeMap[currentNodeId],
+          target: nodeMap[infrequentlyUsedNodeId],
+          value: 1
+        });
+      }
+    });
+
+    // Handle words in the next session that did not match any words in the current session
+    nextSessionWords.forEach(word => {
+      if (!currentSessionWords.has(word)) {
+        const notUsedNodeId = `${i + 1}-not used`;
+        if (!nodeMap[notUsedNodeId]) {
+          nodes.push({
+            id: notUsedNodeId,
+            name: 'not used',
+            session: i + 1, // Adjust session index to start from 1
+            index: topWords + 2,
+            value: 30,
+            color: colorSchema(i + 2), // Adjust session index to start from 1
+            x0: (i + 1) * (sessionWidth + nodePadding),
+            x1: (i + 1) * (sessionWidth + nodePadding) + sessionWidth
+          });
+          nodeMap[notUsedNodeId] = nodes.length - 1;
+        }
+        // Only link to "not used" if the word existed in the previous session
+        const sourceNodeId = `${i + 1}-${word}`;
+        if (nodeMap[sourceNodeId] !== undefined) {
+          links.push({
+            source: nodeMap[sourceNodeId],
+            target: nodeMap[notUsedNodeId],
+            value: 1
+          });
+        }
+      }
+    });
+  }
 
   console.log('Transformed Nodes:', nodes);
   console.log('Transformed Links:', links);
@@ -85,12 +120,12 @@ function transformDataToSankeyFormat(sessions) {
   return { nodes, links };
 }
 
-function SankeyDiagram({ sessions }) {
+function SankeyDiagram({ sessions, topWords }) {
   const svgRef = useRef();
   const [tooltipData, setTooltipData] = useState(null);
 
   useEffect(() => {
-    const sankeyData = transformDataToSankeyFormat(sessions);
+    const sankeyData = transformDataToSankeyFormat(sessions, topWords);
 
     if (!sankeyData || !sankeyData.nodes || !sankeyData.links) {
       console.warn('Invalid data structure:', sankeyData);
@@ -109,8 +144,9 @@ function SankeyDiagram({ sessions }) {
       .extent([[10, 10], [width - 10, height - 10]]) // Added padding
       .nodeSort(null); // Disable automatic sorting of nodes
 
+    // Create the sankey layout
     const { nodes, links } = sankey({
-      nodes: sankeyData.nodes.map(d => ({ ...d, id: undefined })), // Remove id if not needed
+      nodes: sankeyData.nodes.map(d => ({ ...d })),
       links: sankeyData.links.map(d => ({ ...d }))
     });
 
@@ -131,7 +167,6 @@ function SankeyDiagram({ sessions }) {
       .attr('x2', '100%')
       .attr('y2', '0%') // Horizontal gradient
       .each(function(d) {
-        // Add stops to gradient
         d3.select(this)
           .append('stop')
           .attr('offset', '0%')
@@ -157,7 +192,28 @@ function SankeyDiagram({ sessions }) {
       .attr('fill', 'none')
       .attr('stroke-opacity', 0.5) // Slight transparency
       .on('mouseover', (event, d) => {
-        setTooltipData({ visible: true, x: event.pageX + 10, y: event.pageY - 28, data: { word: d.source.name, value: d.value, target: d.targetWord } });
+        const sourceNode = nodes[d.source.index];
+        const targetNode = nodes[d.target.index];
+        const tooltipWidth = 200; // Approximate width of the tooltip
+        const xPosition = event.pageX;
+        const viewportWidth = window.innerWidth;
+
+        // Calculate the tooltip position and flip if necessary
+        const adjustedX = (xPosition + tooltipWidth > viewportWidth) 
+          ? xPosition - tooltipWidth - 10 // Position to the left if overflowing
+          : xPosition + 10; // Position to the right
+
+        setTooltipData({
+          visible: true,
+          x: adjustedX,
+          y: event.pageY - 28,
+          data: {
+            name: sourceNode.name,
+            value: d.value,
+            target: targetNode.name,
+            session: sourceNode.session
+          }
+        });
       })
       .on('mouseout', () => {
         setTooltipData(null); // Hide tooltip
@@ -175,7 +231,25 @@ function SankeyDiagram({ sessions }) {
       .attr('fill', d => d.color)
       .attr('stroke', '#000')
       .on('mouseover', (event, d) => {
-        setTooltipData({ visible: true, x: event.pageX + 10, y: event.pageY - 28, data: { word: d.name, value: d.value } });
+        const tooltipWidth = 200; // Approximate width of the tooltip
+        const xPosition = event.pageX;
+        const viewportWidth = window.innerWidth;
+
+        // Calculate the tooltip position and flip if necessary
+        const adjustedX = (xPosition + tooltipWidth > viewportWidth) 
+          ? xPosition - tooltipWidth - 10 // Position to the left if overflowing
+          : xPosition + 10; // Position to the right
+
+        setTooltipData({
+          visible: true,
+          x: adjustedX,
+          y: event.pageY - 28,
+          data: {
+            name: d.name,
+            value: d.value,
+            session: d.session
+          }
+        });
       })
       .on('mouseout', () => {
         setTooltipData(null); // Hide tooltip
@@ -194,12 +268,14 @@ function SankeyDiagram({ sessions }) {
       .attr('text-anchor', d => d.x0 < width / 2 ? 'start' : 'end')
       .text(d => d.name);
 
-  }, [sessions]);
+  }, [sessions, topWords]); // Add topWords as a dependency
 
   return (
     <div style={{ padding: '20px' }}> {/* Added padding to container */}
       <svg ref={svgRef} />
-      {tooltipData && <Tooltip tooltipData={tooltipData} position={{ x: tooltipData.x, y: tooltipData.y }} />}
+      {tooltipData && tooltipData.visible && ( // Ensure tooltipData is defined and visible is true
+        <Tooltip tooltipData={tooltipData.data} position={{ x: tooltipData.x, y: tooltipData.y }} />
+      )}
     </div>
   );
 }
