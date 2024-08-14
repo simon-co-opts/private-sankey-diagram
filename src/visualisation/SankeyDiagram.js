@@ -4,7 +4,7 @@ import { sankey as d3Sankey, sankeyLinkHorizontal } from 'd3-sankey';
 import Tooltip from '../components/Tooltip';
 import '../styling/Tooltip.css';
 
-// Updated color schema with specified colors
+// This updates the color schema with specified colors which will be handed over to the dahsboard to control this
 const colorSchema = d3.scaleOrdinal()
   .domain([1, 2, 3, 4])
   .range(['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728']);
@@ -12,11 +12,11 @@ const colorSchema = d3.scaleOrdinal()
 function transformDataToSankeyFormat(sessions, topWords) {
   const nodes = [];
   const links = [];
-  const nodeMap = {}; // Mapping node id to node index in the nodes array
-  const sessionWidth = 100; // Width for each session column
-  const nodePadding = 10; // Padding between nodes
+  const nodeMap = {}; // This is mapping the node id to the node index in the nodes array
+  const sessionWidth = 100; // This controls the width for each session column
+  const nodePadding = 10; // This controls the padding between nodes
 
-  // Add all top words from each session as nodes
+  // This adds all top words from each session as nodes
   sessions.forEach((session, sessionIndex) => {
     const topWordsList = session.wordFrequencies.slice(0, topWords).map((w, i) => ({
       name: w.word,
